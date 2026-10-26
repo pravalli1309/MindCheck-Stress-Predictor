@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import altair as alt
 
 st.set_page_config(page_title="MindCheck", page_icon="🧠", layout="centered")
 
@@ -74,8 +75,19 @@ if "values" in st.session_state:
         st.subheader("2. Result")
         st.markdown(f"### {ICONS[label_id]} Stress level: **{LABELS[label_id]}**")
         st.write(f"Confidence: **{conf:.1f}%**")
-        st.bar_chart(pd.Series(
-            {LABELS[int(c)]: p for c, p in zip(model.classes_, probs)}))
+
+        prob_df = pd.DataFrame({
+            "Level": [LABELS[int(c)] for c in model.classes_],
+            "Probability": probs,
+        })
+        st.altair_chart(
+            alt.Chart(prob_df).mark_bar().encode(
+                x=alt.X("Level:N", sort=["Low", "Medium", "High"],
+                        axis=alt.Axis(labelAngle=0)),
+                y="Probability:Q",
+            ),
+            use_container_width=True,
+        )
 
         # ---------- What-if ----------
         st.subheader("3. What-if simulator")
@@ -120,10 +132,3 @@ if "values" in st.session_state:
         # ---------- Feature importance ----------
         try:
             imp = pd.read_csv("importance.csv", index_col=0).iloc[:, 0].head(8)
-            st.subheader("5. What affects stress the most (from our data)")
-            st.bar_chart(imp)
-        except Exception:
-            pass
-
-    except Exception:
-        st.error("Something went wrong with the input. Please adjust the values and try again.")
