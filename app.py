@@ -52,7 +52,7 @@ def predict(values: dict):
 st.title("🧠 MindCheck: Stress Simulator")
 st.write("Enter your current situation, get your stress level, then test "
          "**what-if** changes to see how stress could improve.")
-st.caption("Team: Member 1 · Member 2 · Member 3 · Member 4")
+st.caption("Team: Jashwanth · Priya · Pravallika · Likitha · Jyothi")
 st.caption("⚠️ Self-awareness tool only. Not a medical diagnosis.")
 
 # ---------- Inputs ----------
